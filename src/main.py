@@ -27,93 +27,211 @@ if 'undo_stack' not in st.session_state:
 def main():
     st.set_page_config(page_title="Data Table Manager", layout="wide", page_icon="📊")
     
-    # Add custom CSS for better styling
+    # Modern CSS theme with proper contrast and accessibility
     st.markdown("""
         <style>
-        body, .stApp {
-            background-color: #ffffff !important;
-            color: #000000 !important;
+        /* Root variables for consistent theming */
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary-color: #64748b;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #059669;
+            --success-bg: #ecfdf5;
+            --warning-color: #d97706;
+            --warning-bg: #fffbeb;
+            --error-color: #dc2626;
+            --error-bg: #fef2f2;
+            --info-color: #0284c7;
+            --info-bg: #f0f9ff;
         }
-        /* White background for data tables */
+        
+        /* Main app styling */
+        .stApp {
+            background-color: var(--background-color) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        /* Data tables with modern styling */
         .stDataFrame, .stDataFrame > div {
-            background-color: #ffffff !important;
-            color: #000000 !important;
+            background-color: var(--surface-color) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
         }
-        /* White background for download button */
-        .stDownloadButton > button {
-            background-color: #ffffff !important;
-            border: 1px solid #000000 !important;
-            color: #000000 !important;
+        
+        /* Modern button styling */
+        .stButton > button, .stDownloadButton > button {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 0.5rem 1rem !important;
+            font-weight: 500 !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
         }
-        /* Remove hover effects */
-        .stDownloadButton > button:hover {
-            background-color: #ffffff !important;
-            border: 1px solid #000000 !important;
-            color: #000000 !important;
+        
+        .stButton > button:hover, .stDownloadButton > button:hover {
+            background-color: var(--primary-hover) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
-        /* White background for sidebar */
+        
+        /* Sidebar with subtle background */
         section[data-testid="stSidebar"] {
-            background-color: #ffffff !important;
-            color: #000000 !important;
+            background-color: var(--surface-color) !important;
+            border-right: 1px solid var(--border-color) !important;
         }
-        /* White background for tabs */
+        
+        .stSidebar .stMarkdown, .stSidebar .stText {
+            color: var(--text-primary) !important;
+        }
+        
+        /* Modern tab styling */
         .stTabs [data-baseweb="tab-list"] {
-            background-color: #ffffff !important;
+            background-color: var(--surface-color) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            gap: 0 !important;
+            padding: 0 !important;
         }
-        /* Simple header styling */
-        .main-header {
-            background-color: #000000 !important;
-            color: #ffffff;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        /* Simple tab styling */
+        
         .stTabs [data-baseweb="tab"] {
-            height: 50px;
-            font-size: 16px;
-            font-weight: normal;
-            color: #000000;
+            height: 48px !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            color: var(--text-secondary) !important;
+            background-color: transparent !important;
+            border: none !important;
+            border-bottom: 2px solid transparent !important;
+            padding: 0 1.5rem !important;
+            transition: all 0.2s ease !important;
         }
+        
+        .stTabs [data-baseweb="tab"]:hover {
+            color: var(--primary-color) !important;
+            background-color: var(--background-color) !important;
+        }
+        
         .stTabs [data-baseweb="tab"][aria-selected="true"] {
-            color: #000000;
-            border-bottom: 2px solid #000000;
+            color: var(--primary-color) !important;
+            border-bottom-color: var(--primary-color) !important;
+            background-color: var(--background-color) !important;
         }
-        /* Ensure black text for all elements */
-        .stMarkdown, .stText, .stCaption {
-            color: #000000 !important;
-        }
+        
+        /* Header with modern gradient */
         .main-header {
             text-align: center;
-            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
             color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        .stTabs [data-baseweb="tab-list"] {
-            gap: 20px;
+        
+        /* Text styling for better readability */
+        .stMarkdown, .stText, .stCaption {
+            color: var(--text-primary) !important;
         }
-        .stTabs [data-baseweb="tab"] {
-            height: 50px;
-            font-size: 16px;
-            font-weight: bold;
+        
+        .stCaption {
+            color: var(--text-secondary) !important;
         }
-        .css-1kyxreq {
-            justify-content: center;
+        
+        /* Input fields with modern styling */
+        .stTextInput > div > div > input,
+        .stSelectbox > div > div > div,
+        .stMultiSelect > div > div > div {
+            background-color: var(--surface-color) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 6px !important;
+            color: var(--text-primary) !important;
         }
+        
+        /* Expander styling */
+        .streamlit-expanderHeader {
+            background-color: var(--surface-color) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 6px !important;
+            color: var(--text-primary) !important;
+        }
+        
+        /* Alert messages with proper contrast */
+        .stAlert {
+            border-radius: 6px !important;
+            border: none !important;
+        }
+        
+        .stSuccess {
+            background-color: var(--success-bg) !important;
+            color: var(--success-color) !important;
+        }
+        
+        .stWarning {
+            background-color: var(--warning-bg) !important;
+            color: var(--warning-color) !important;
+        }
+        
+        .stError {
+            background-color: var(--error-bg) !important;
+            color: var(--error-color) !important;
+        }
+        
+        .stInfo {
+            background-color: var(--info-bg) !important;
+            color: var(--info-color) !important;
+        }
+        
+        /* Custom message classes */
         .success-message {
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #d4edda;
-            color: #155724;
+            padding: 12px 16px;
+            border-radius: 6px;
+            background-color: var(--success-bg);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
             margin: 10px 0;
         }
+        
         .info-message {
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #d1ecf1;
-            color: #0c5460;
+            padding: 12px 16px;
+            border-radius: 6px;
+            background-color: var(--info-bg);
+            color: var(--info-color);
+            border-left: 4px solid var(--info-color);
             margin: 10px 0;
+        }
+        
+        /* Data editor improvements */
+        .stDataEditor {
+            border-radius: 8px !important;
+            overflow: hidden !important;
+        }
+        
+        /* Metric styling */
+        .stMetric {
+            background-color: var(--surface-color) !important;
+            padding: 1rem !important;
+            border-radius: 8px !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        
+        /* Slider styling */
+        .stSlider > div > div > div > div {
+            background-color: var(--primary-color) !important;
+        }
+        
+        /* Radio button styling */
+        .stRadio > div {
+            background-color: var(--surface-color) !important;
+            padding: 0.5rem !important;
+            border-radius: 6px !important;
+            border: 1px solid var(--border-color) !important;
         }
         </style>
     """, unsafe_allow_html=True)
